@@ -7,7 +7,14 @@ contract EthSwap {
 	DevToken public token;
 	uint public rate = 200;
 
-	event TokenPurchased(
+	event TokensPurchased(
+		address account,
+		address token,
+		uint amount,
+		uint rate
+	);
+
+	event TokensSold(
 		address account,
 		address token,
 		uint amount,
@@ -18,14 +25,29 @@ contract EthSwap {
 		token = _token;
 	}
 
+	function multiply(uint x, uint y) internal pure returns (uint z) {
+		require(y == 0 || (z = x * y) / y == x);
+	}
+
 	function buyTokens () public payable {
-		uint tokenAmount = msg.value * rate;
+		uint tokenAmount = multiply(msg.value, rate);
 
 		require(token.balanceOf(address(this)) >= tokenAmount);
 
 		token.transfer(msg.sender, tokenAmount);
 		
-		emit TokenPurchased(msg.sender, address(token), tokenAmount, rate);
+		emit TokensPurchased(msg.sender, address(token), tokenAmount, rate);
 	}
 	
+	function sellTokens (uint _amount) public {
+		uint etherAmount = _amount / rate;
+
+		require(token.balanceOf(msg.sender) >= _amount);
+		require(address(this).balance >= etherAmount);
+
+		token.transferFrom(msg.sender, address(this), _amount);
+		msg.sender.transfer(etherAmount);
+
+		emit TokensSold(msg.sender, address(token), _amount, rate);
+	}
 }
