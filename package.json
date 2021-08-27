@@ -25,12 +25,15 @@
     "react-scripts": "2.1.3",
     "web3": "1.0.0-beta.55"
   },
-  "homepage": "https://fmcch.github.io/tuto_eth_swap/",
+  "homepage": "https://fmcch.github.io/tuto_eth_swap",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"   
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+     
   },
   "eslintConfig": {
     "extends": "react-app"
